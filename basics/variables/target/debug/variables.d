@@ -1,1 +1,1 @@
-/home/hs1167/rustlings/variables/target/debug/variables: /home/hs1167/rustlings/variables/src/main.rs
+/home/hs1167/dev/learning-rust-zk/basics/variables/target/debug/variables: /home/hs1167/dev/learning-rust-zk/basics/variables/src/main.rs
