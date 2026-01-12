@@ -12,8 +12,18 @@
 // the quantity bought.
 // fn calculate_price_of_apples(???) -> ??? { ??? }
 
+use core::num;
+
 fn main() {
     // You can optionally experiment here.
+}
+
+fn calculate_price_of_apples(number_of_apples:u8) -> u8 {
+    if number_of_apples <= 40 {
+        number_of_apples*2
+    } else {
+        number_of_apples
+    }
 }
 
 // Don't change the tests!
