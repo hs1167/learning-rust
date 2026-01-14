@@ -26,3 +26,7 @@ primitive_types4
 primitive_types5
 primitive_types6
 move_semantics1
+move_semantics2
+move_semantics3
+move_semantics4
+move_semantics5
