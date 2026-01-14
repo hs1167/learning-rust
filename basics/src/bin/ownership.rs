@@ -1,13 +1,12 @@
-
+// Fix the error without removing any code
 fn main() {
-    let s = give_ownership();
+    let s = String::from("Hello World");
+
+    print_str(&s);
+
     println!("{}", s);
 }
 
-// Only modify the code below!
-fn give_ownership() -> String {
-    let s = String::from("Hello world");
-    // Convert String to Vec
-    let _s = s.as_bytes();
-    s
+fn print_str(s: &String) -> () {
+    println!("{}",s);
 }
