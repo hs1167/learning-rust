@@ -1,12 +1,9 @@
 
-// Comment one line to make it work
 fn main() {
-    let mut s = String::from("hello, ");
+   let t = (String::from("hello"), String::from("world"));
 
-    let r1 = &mut s;
-    r1.push_str("world");
-    let r2 = &mut s; //r1 is killed
-    r2.push_str("!");
-    
-    //println!("{}",r1); ERROR: r1 doesn't exist here
-} 
+   let _s = t.0; //here the ownership of t on the hello string is partially moved
+
+   // Modify this line only, don't use `_s`
+   println!("{:?}", t.1); //here t.1 already exists, but not the entire t tuple!
+}
