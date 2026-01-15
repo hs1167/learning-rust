@@ -11,7 +11,7 @@ mod tests {
         let mut x = Vec::new();
         let y = &mut x;
         
-        y.push(42);
+        y.push(42);   //we use lifetime
         let z = &mut x;
         z.push(13);
         assert_eq!(x, [42, 13]);
