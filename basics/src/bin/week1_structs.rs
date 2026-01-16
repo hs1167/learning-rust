@@ -1,4 +1,3 @@
-// DO THIS EXERCISE
 // File: src/week1_ownership.rs
 
 pub struct Secret {
@@ -9,15 +8,27 @@ impl Secret {
     pub fn new(bytes: Vec<u8>) -> Self {
         Secret { bytes }
     }
-    
-    // This doesn't compile! Why? (Ownership moved)
+
+    // Version A: Consumption (What you did)
+    // Takes ownership, consumes the Secret, returns the raw bytes.
+    pub fn into_bytes(self) -> Vec<u8> {
+        self.bytes
+    }
+
+    // Version B: Cloning (Original intent)
+    // Borrows the secret, returns a copy. Original remains valid.
     pub fn leak(&self) -> Vec<u8> {
-        self.bytes.clone() // ❌ If we remove .clone(), why does it fail?
+        self.bytes.clone()
     }
 }
 
 fn main() {
     let secret = Secret::new(vec![1, 2, 3]);
-    let s1 = secret; // ownership moved
-    // let s2 = secret; // ❌ ERROR: value used after move
+    
+    // MOVE semantic: ownership transfers from 'secret' to 's1'.
+    let _s1 = secret; 
+    
+    // COMPILE ERROR: Use of moved value: 'secret'.
+    // The value layout in memory is now owned by 's1'.
+    // let s2 = secret; 
 }
