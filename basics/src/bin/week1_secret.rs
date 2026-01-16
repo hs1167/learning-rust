@@ -9,16 +9,9 @@ impl Secret {
         Secret { bytes }
     }
 
-    // Version A: Consumption (What you did)
     // Takes ownership, consumes the Secret, returns the raw bytes.
     pub fn into_bytes(self) -> Vec<u8> {
         self.bytes
-    }
-
-    // Version B: Cloning (Original intent)
-    // Borrows the secret, returns a copy. Original remains valid.
-    pub fn leak(&self) -> Vec<u8> {
-        self.bytes.clone()
     }
 }
 

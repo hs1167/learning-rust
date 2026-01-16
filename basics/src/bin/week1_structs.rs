@@ -1,34 +1,41 @@
-// File: src/week1_ownership.rs
+use std::fmt;
 
-pub struct Secret {
-    bytes: Vec<u8>,
+
+#[derive(Clone, Copy)]
+pub struct Note{
+    pub secret: u64,
+    pub nullifier: u64,
 }
 
-impl Secret {
-    pub fn new(bytes: Vec<u8>) -> Self {
-        Secret { bytes }
+impl Note{
+
+
+    pub fn new(secret:u64,nullifier:u64) -> Self {
+        Note{secret: secret, nullifier: nullifier}
     }
 
-    // Version A: Consumption (What you did)
-    // Takes ownership, consumes the Secret, returns the raw bytes.
-    pub fn into_bytes(self) -> Vec<u8> {
-        self.bytes
-    }
-
-    // Version B: Cloning (Original intent)
-    // Borrows the secret, returns a copy. Original remains valid.
-    pub fn leak(&self) -> Vec<u8> {
-        self.bytes.clone()
+    pub fn commitment(&self) -> u64 {
+        self.secret ^ self.nullifier
     }
 }
 
-fn main() {
-    let secret = Secret::new(vec![1, 2, 3]);
+impl fmt::Display for Note {  
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Note(secret={}, nullifier={})", self.secret, self.nullifier)
+    }
+}
+fn main(){
+    let note = Note{secret:123456, nullifier: 789};
+    println!("{:?}",note);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*; 
     
-    // MOVE semantic: ownership transfers from 'secret' to 's1'.
-    let _s1 = secret; 
-    
-    // COMPILE ERROR: Use of moved value: 'secret'.
-    // The value layout in memory is now owned by 's1'.
-    // let s2 = secret; 
+    #[test] 
+    fn test_note_creation(){
+        let note = Note::new(42,100);
+        assert_eq!(note.commitment(),42^100);
+    }
 }
