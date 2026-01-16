@@ -38,4 +38,18 @@ mod tests {
         let note = Note::new(42,100);
         assert_eq!(note.commitment(),42^100);
     }
+
+    [test]
+    fn test_commitment_deterministic() {
+        let n1 = Note::new(42, 100);
+        let n2 = Note::new(42, 100);
+        assert_eq!(n1.commitment(), n2.commitment());
+    }
+
+    #[test]
+    fn test_display() {
+        let note = Note::new(42, 100);
+        println!("{}", note);  // Should print: Note(secret=42, nullifier=100)
+    }
 }
+
