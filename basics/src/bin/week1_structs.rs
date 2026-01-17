@@ -51,5 +51,13 @@ mod tests {
         let note = Note::new(42, 100);
         println!("{}", note);  // Should print: Note(secret=42, nullifier=100)
     }
+
+    #[test]
+    fn test_copy_mechanics() {
+        let n1 = Note::new(1, 2);
+        let n2 = n1; 
+        println!("n1 alive : {:?}", n1); 
+        println!("Copy : {:?}", n2);
+    }
 }
 
