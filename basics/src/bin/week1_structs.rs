@@ -1,7 +1,7 @@
 use std::fmt;
 
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy,Debug)]
 pub struct Note{
     pub secret: u64,
     pub nullifier: u64,
@@ -39,7 +39,7 @@ mod tests {
         assert_eq!(note.commitment(),42^100);
     }
 
-    [test]
+    #[test]
     fn test_commitment_deterministic() {
         let n1 = Note::new(42, 100);
         let n2 = Note::new(42, 100);
