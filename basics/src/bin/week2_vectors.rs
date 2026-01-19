@@ -5,33 +5,34 @@ pub type Hash = [u8; 32];
 #[derive(Debug)]
 pub struct MerklePath {
     // TODO: Define a public field named 'hashes' which is a Vector of Hash
+    pub hashes: Vec<Hash>, // list of sibling hashes
 }
 
 impl MerklePath {
     /// Creates a new empty proof
     pub fn new() -> Self {
         // TODO: Return a MerklePath instance with an empty vector
-        unimplemented!()
+        MerklePath{hashes: Vec::new(),}
     }
 
     /// Adds a sibling to the end of the proof
     /// Note the `&mut self`: why do we need mutability here?
     pub fn add_sibling(&mut self, hash: Hash) {
         // TODO: Push the hash into the vector
-        unimplemented!()
+        self.hashes.push(hash);
     }
 
     /// Removes the last added element and returns it (LIFO)
     /// Hint: Check the .pop() method in the Vec docs
     /// Note: We return Option<Hash> because the vector might be empty
     pub fn pop_sibling(&mut self) -> Option<Hash> {
-        unimplemented!()
+        self.hashes.pop()
     }
 
     /// Returns the number of elements in the proof
     /// Note the `&self`: here we borrow in read-only mode
     pub fn len(&self) -> usize {
-        unimplemented!()
+        self.hashes.len()
     }
 }
 
