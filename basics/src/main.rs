@@ -1,3 +1,5 @@
+use basics::merkle_tree::MerkleTree;
+
 fn main() {
-    println!("Hello, world!");
+    println!("Library structure ready!");
 }
