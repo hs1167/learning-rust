@@ -1,5 +1,5 @@
 use sha2::{Sha256, Digest};
-
+pub type Hash = [u8;32];
 /// A single node in the Merkle tree
 #[derive(Clone, Debug)]
 pub struct MerkleNode {
@@ -27,7 +27,6 @@ pub struct MerkleTree {
     // Option 1: Store all layers as Vec<Vec<MerkleNode>>
     // Option 2: Store only the root and allow reconstruction
     // (I recommend Option 1 for clarity)
-    pub layers: Vec<Vec<MerkleNode>>, // J'ai ajouté 'pub' pour que tu puisses debugger si besoin
 }
 
 impl MerkleTree {
@@ -45,8 +44,8 @@ impl MerkleTree {
     }
 
     /// Return the root hash
-    pub fn root(&self) -> [u8; 32] {
-        // TODO: Return a copy of the root hash
+    pub fn root(&self) -> &[u8; 32] {
+        // TODO: Return a reference to the root hash
         todo!()
     }
 
@@ -63,9 +62,27 @@ impl MerkleTree {
         // TODO: Return the count
         todo!()
     }
+
+    /// Get a proof path for leaf at index `leaf_index`
+    /// Returns the sibling hashes needed to reconstruct the root
+    /// 
+    /// # Returns
+    /// A vector of (hash, direction) tuples where:
+    /// - hash: the sibling hash at this level
+    /// - direction: whether the sibling is on the left or right
+    pub fn proof_path(&self, leaf_index: usize) -> Option<Vec<([u8; 32], ProofDirection)>> {
+        // TODO: Walk from the leaf to the root, collecting siblings
+        // (Optional: only implement if you have time)
+        todo!()
+    }
 }
 
-// --- TES TESTS OBLIGATOIRES (Tier 1 à 4) ---
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum ProofDirection {
+    Left,
+    Right,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
