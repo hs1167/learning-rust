@@ -10,14 +10,21 @@ impl MerkleNode {
     /// Create a leaf node by hashing data
     pub fn leaf(data: &[u8]) -> Self {
         // TODO: Hash the data with SHA-256, store the 32-byte result
-        todo!()
+        let mut hasher = Sha256::new();
+        hasher.update(data);
+        let result = hasher.finalize();
+        MerkleNode { hash: result.into() } //into instead of try_into because of fixed 32bytes size
     }
 
     /// Create an internal node by hashing two children
     /// The order matters: hash(left || right), not (right || left)
     pub fn parent(left: &MerkleNode, right: &MerkleNode) -> Self {
         // TODO: Hash the concatenation of left.hash and right.hash
-        todo!()
+        let mut hasher = Sha256::new();
+        hasher.update(&left.hash);  //& to prevent useless copy
+        hasher.update(&right.hash); //whithout & we make a useless copy, thats not idiomatic
+        let res = hasher.finalize();
+        MerkleNode { hash: res.into() }
     }
 }
 
@@ -27,6 +34,7 @@ pub struct MerkleTree {
     // Option 1: Store all layers as Vec<Vec<MerkleNode>>
     // Option 2: Store only the root and allow reconstruction
     // (I recommend Option 1 for clarity)
+    pub layers: Vec<Vec<MerkleNode>>,
 }
 
 impl MerkleTree {
@@ -40,8 +48,17 @@ impl MerkleTree {
         // 2. Create leaf nodes for all data items
         // 3. Build layers bottom-up until you reach a single root
         // 4. Store the structure for later queries
-        todo!()
+        if is_a_pow_of_two(data.len()) {panic!("The len of data must be a power of two!")} 
+
+        let mut layers: Vec<Hash> = Vec::new();
+        for elm in &data {layers.push(elm)}
+
+
+
+        MerkleTree { layers: todo!() }
     }
+    
+
 
     /// Return the root hash
     pub fn root(&self) -> &[u8; 32] {
@@ -76,6 +93,10 @@ impl MerkleTree {
         todo!()
     }
 }
+
+pub fn is_a_pow_of_two (n:usize) -> bool {
+        (n!=0) && (n&(n-1))==0 
+    }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum ProofDirection {
