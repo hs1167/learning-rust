@@ -48,11 +48,24 @@ impl MerkleTree {
         // 2. Create leaf nodes for all data items
         // 3. Build layers bottom-up until you reach a single root
         // 4. Store the structure for later queries
-        if is_a_pow_of_two(data.len()) {panic!("The len of data must be a power of two!")} 
+        if !is_a_pow_of_two(data.len()) {panic!("The len of data must be a power of two!")} 
+        let mut layers:Vec<Vec<MerkleNode>>= Vec::new();
+        let mut convert: Vec<MerkleNode> = Vec::new();
+        for elm in data {
+            //layers.push(MerkleNode::leaf(elm))
+            convert.push(MerkleNode::leaf(elm))
+        }
+        layers.push(convert);
 
-        let mut layers: Vec<Hash> = Vec::new();
-        for elm in &data {layers.push(elm)}
-
+        while layers.last().unwrap().len() > 1 { //licite her because of the push just before...
+            let mut next_layer: Vec<MerkleNode>= Vec::new();
+            let mut part = layers.chunks_exact(2);
+            for chunk in part{
+                let new_parent:  = MerkleNode::parent(&chunk[0], &chunk[1]);
+                next_layer.push(new_parent)
+            }
+            layers.push(next_layer)
+        }
 
 
         MerkleTree { layers: todo!() }
@@ -95,7 +108,7 @@ impl MerkleTree {
 }
 
 pub fn is_a_pow_of_two (n:usize) -> bool {
-        (n!=0) && (n&(n-1))==0 
+        (n!=0) && (n&(n-1))==0 //because of binary rep tricks
     }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
