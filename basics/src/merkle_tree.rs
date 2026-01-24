@@ -52,7 +52,7 @@ impl MerkleTree {
         while layers.last().unwrap().len() > 1 { //licite her because of the push just before, so we know the vec isn't empty
             //to store the next layer
             let mut next_layer: Vec<MerkleNode>= Vec::new();
-            let mut part = layers.last().unwrap().chunks_exact(2);
+            let part = layers.last().unwrap().chunks_exact(2);
             for chunk in part{
                 let new_parent  = MerkleNode::parent(&chunk[0], &chunk[1]);
                 next_layer.push(new_parent)
@@ -103,6 +103,19 @@ impl MerkleTree {
 pub fn is_a_pow_of_two (n:usize) -> bool {
         (n!=0) && (n&(n-1))==0 //because of binary rep tricks
     }
+
+pub fn verify_proof(leaf: &[u8], proof: &[(Hash, SiblingDirection)], root: Hash) -> bool {
+    let mut curr = MerkleNode::leaf(leaf).hash;
+    for (sib, direction) in proof{
+        let mut hasher = Sha256::new();
+        match direction {
+            SiblingDirection::Left => {hasher.update(sib); hasher.update(curr)}
+            SiblingDirection::Right => {hasher.update(curr); hasher.update(sib)}
+        }
+        curr = hasher.finalize().into()
+    }
+    curr == root
+}
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum SiblingDirection {
@@ -167,7 +180,7 @@ mod tests {
         assert_eq!(tree.num_leaves(), 8);
         assert_eq!(tree.depth(), 3);
     }
-}
+
 
     #[test]
 fn test_sixteen_leaves() {
@@ -252,4 +265,23 @@ fn test_proof_path_length_matches_depth() {
             }
         }
     }
+}
+
+    // Tier 6: End-to-End Verification
+    #[test]
+    fn test_full_cycle_verification() {
+        let data:Vec<&[u8]> = vec![b"a", b"b", b"c", b"d"];
+        let tree = MerkleTree::new(data.clone());
+        let root = tree.root();
+        
+        // Generate proof for leaf "c" at index 2
+        let proof = tree.proof_path(2).expect("Proof should exist for index 2");
+        
+        // Success case: Verify the legitimate leaf
+        assert!(verify_proof(b"c", &proof, root), "Verification should pass for valid leaf and proof");
+        
+        // Failure case: Verify that a modified leaf fails even with the correct proof structure
+        assert!(!verify_proof(b"wrong", &proof, root), "Verification should fail for incorrect leaf data");
+    }
+
 }
