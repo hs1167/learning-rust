@@ -37,7 +37,7 @@ pub struct MerkleTree {
 impl MerkleTree {
     pub fn new(data: Vec<&[u8]>) -> Self {
         //Validate that data.len() is a power of 2
-        if !is_a_pow_of_two(data.len()) {panic!("The len of data must be a power of two!")} //logic negation
+        if data.len() < 2 || !is_a_pow_of_two(data.len()) {panic!("The len of data must be a power of two!")} //logic negation
         //our future merkle tree
         let mut layers:Vec<Vec<MerkleNode>>= Vec::new();
         //convert data into merklenode (hash) for layer 0
@@ -77,21 +77,24 @@ impl MerkleTree {
 
     /// Return the number of leaves
     pub fn num_leaves(&self) -> usize {
-        // TODO: Return the count
-        todo!()
+        self.layers[0].len()
     }
 
-    /// Get a proof path for leaf at index `leaf_index`
-    /// Returns the sibling hashes needed to reconstruct the root
-    /// 
-    /// # Returns
+    /// Returns
     /// A vector of (hash, direction) tuples where:
     /// - hash: the sibling hash at this level
     /// - direction: whether the sibling is on the left or right
-    pub fn proof_path(&self, leaf_index: usize) -> Option<Vec<([u8; 32], ProofDirection)>> {
-        // TODO: Walk from the leaf to the root, collecting siblings
-        // (Optional: only implement if you have time)
-        todo!()
+    pub fn proof_path(&self, leaf_index: usize) -> Option<Vec<(Hash, SiblingDirection)>> {
+        if leaf_index >= self.num_leaves() { return None; }
+        let mut path = Vec::new();
+        let mut curr_idx = leaf_index;
+        for i in 0..self.depth() {
+            if curr_idx%2 == 0 {path.push((self.layers[i][curr_idx+1].hash,SiblingDirection::Right))} else {
+                path.push((self.layers[i][curr_idx-1].hash,SiblingDirection::Left))
+            }
+            curr_idx /= 2;
+        }
+        Some(path)
     }
 }
 
@@ -100,7 +103,7 @@ pub fn is_a_pow_of_two (n:usize) -> bool {
     }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub enum ProofDirection {
+pub enum SiblingDirection {
     Left,
     Right,
 }
