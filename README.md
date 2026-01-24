@@ -18,7 +18,7 @@
 * **Ownership & Memory**: Applied Rust's borrow checker principles using slices (`&[u8]`) to ensure memory safety without performance overhead.
 * **Algorithm Design**: Developed parity-based navigation for sibling traversal and proof generation.
 * **Stateless Verification**: Decoupled verification logic from the tree storage, mimicking real-world blockchain client behavior.
-
+* 
 ```mermaid
 graph BT
     L1[Leaf 0] --> P1[Parent 0-1]
@@ -28,6 +28,7 @@ graph BT
     P1 --> R[Merkle Root]
     P2 --> R
     style R fill:#f96,stroke:#333,stroke-width:4px
+```
 
 ## 📂 Project Structure
 * `basics/`: Core Rust concepts and custom data structures (The Merkle Tree lives here).
