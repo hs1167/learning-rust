@@ -71,6 +71,7 @@ impl MerkleTree {
         self.layers.last().unwrap()[0].hash
     }
 
+    ///Return the depth of the tree
     pub fn depth(&self) -> usize {
         self.layers.len() - 1
     }
@@ -97,6 +98,7 @@ impl MerkleTree {
         Some(path)
     }
 }
+
 
 pub fn is_a_pow_of_two (n:usize) -> bool {
         (n!=0) && (n&(n-1))==0 //because of binary rep tricks
@@ -164,5 +166,90 @@ mod tests {
         ]);
         assert_eq!(tree.num_leaves(), 8);
         assert_eq!(tree.depth(), 3);
+    }
+}
+
+    #[test]
+fn test_sixteen_leaves() {
+    let data: Vec<&[u8]> = (0..16)
+        .map(|i| format!("item_{}", i))
+        .map(|s| Box::leak(s.into_boxed_str()).as_bytes())
+        .collect();
+    
+    let tree = MerkleTree::new(data);
+    
+    assert_eq!(tree.num_leaves(), 16);
+    assert_eq!(tree.depth(), 4); // log2(16) = 4
+}
+
+    //Tier 4: Cryptographic Properties
+    #[test]
+fn test_avalanche_one_bit() {
+    // Change one bit in one leaf => root changes completely
+    let tree1 = MerkleTree::new(vec![b"hello", b"world"]);
+    let tree2 = MerkleTree::new(vec![b"hallo", b"world"]); // Changed "e" to "a"
+    
+    let root1 = tree1.root();
+    let root2 = tree2.root();
+    
+    // Count how many bits differ
+    let mut bit_diff = 0;
+    for i in 0..32 {
+        let xor = root1[i] ^ root2[i];
+        bit_diff += xor.count_ones() as usize;
+    }
+    
+    // Cryptographic avalanche: should be ~50% of bits (128 out of 256)
+    // Allow 20% tolerance
+    assert!(bit_diff > 100, "Only {} bits differ, expected ~128", bit_diff);
+}
+
+#[test]
+fn test_different_trees_different_roots() {
+    let data_sizes = vec![2, 4, 8, 16];
+    
+    for size in data_sizes {
+        let data1: Vec<&[u8]> = (0..size)
+            .map(|i| format!("tree1_item_{}", i))
+            .map(|s| Box::leak(s.into_boxed_str()).as_bytes())
+            .collect();
+        
+        let data2: Vec<&[u8]> = (0..size)
+            .map(|i| format!("tree2_item_{}", i))
+            .map(|s| Box::leak(s.into_boxed_str()).as_bytes())
+            .collect();
+        
+        let tree1 = MerkleTree::new(data1);
+        let tree2 = MerkleTree::new(data2);
+        
+        assert_ne!(tree1.root(), tree2.root());
+    }
+}
+
+    //Tier 5: Proof Paths
+    #[test]
+fn test_proof_path_exists() {
+    let tree = MerkleTree::new(vec![b"a", b"b", b"c", b"d"]);
+    
+    let proof = tree.proof_path(0);
+    assert!(proof.is_some());
+    assert_eq!(proof.unwrap().len(), 2); // Depth = 2 => 2 siblings
+}
+
+#[test]
+fn test_proof_path_length_matches_depth() {
+    for size in &[2, 4, 8, 16] {
+        let data: Vec<&[u8]> = (0..*size)
+            .map(|i| format!("item_{}", i))
+            .map(|s| Box::leak(s.into_boxed_str()).as_bytes())
+            .collect();
+        
+        let tree = MerkleTree::new(data);
+        
+        for leaf_idx in 0..*size {
+            if let Some(proof) = tree.proof_path(leaf_idx) {
+                assert_eq!(proof.len(), tree.depth());
+            }
+        }
     }
 }
