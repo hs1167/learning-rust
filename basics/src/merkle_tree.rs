@@ -30,34 +30,27 @@ impl MerkleNode {
 
 /// A complete Merkle tree with power-of-2 leaves
 pub struct MerkleTree {
-    // TODO: Store the tree structure. Options:
-    // Option 1: Store all layers as Vec<Vec<MerkleNode>>
-    // Option 2: Store only the root and allow reconstruction
-    // (I recommend Option 1 for clarity)
+    //store all layers
     pub layers: Vec<Vec<MerkleNode>>,
 }
 
 impl MerkleTree {
-    /// Build a tree from a list of data items
-    /// 
-    /// # Panics
-    /// If data.len() is not a power of 2
     pub fn new(data: Vec<&[u8]>) -> Self {
-        // TODO:
-        // 1. Validate that data.len() is a power of 2
-        // 2. Create leaf nodes for all data items
-        // 3. Build layers bottom-up until you reach a single root
-        // 4. Store the structure for later queries
-        if !is_a_pow_of_two(data.len()) {panic!("The len of data must be a power of two!")} 
+        //Validate that data.len() is a power of 2
+        if !is_a_pow_of_two(data.len()) {panic!("The len of data must be a power of two!")} //logic negation
+        //our future merkle tree
         let mut layers:Vec<Vec<MerkleNode>>= Vec::new();
+        //convert data into merklenode (hash) for layer 0
         let mut convert: Vec<MerkleNode> = Vec::new();
         for elm in data {
             //layers.push(MerkleNode::leaf(elm))
             convert.push(MerkleNode::leaf(elm))
-        }
+        } //data moved here
         layers.push(convert);
 
-        while layers.last().unwrap().len() > 1 { //licite her because of the push just before...
+        //Build layers bottom-up until until reach a single root
+        while layers.last().unwrap().len() > 1 { //licite her because of the push just before, so we know the vec isn't empty
+            //to store the next layer
             let mut next_layer: Vec<MerkleNode>= Vec::new();
             let mut part = layers.last().unwrap().chunks_exact(2);
             for chunk in part{
@@ -74,16 +67,12 @@ impl MerkleTree {
 
 
     /// Return the root hash
-    pub fn root(&self) -> [u8; 32] {
+    pub fn root(&self) -> Hash {
         self.layers.last().unwrap()[0].hash
     }
 
-    /// Return the depth (number of levels - 1)
-    /// Example: A tree with 4 leaves has depth 2
     pub fn depth(&self) -> usize {
-        // TODO: Calculate from the number of leaves
-        // depth = log2(num_leaves)
-        todo!()
+        self.layers.len() - 1
     }
 
     /// Return the number of leaves
