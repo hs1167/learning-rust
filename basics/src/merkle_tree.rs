@@ -59,24 +59,23 @@ impl MerkleTree {
 
         while layers.last().unwrap().len() > 1 { //licite her because of the push just before...
             let mut next_layer: Vec<MerkleNode>= Vec::new();
-            let mut part = layers.chunks_exact(2);
+            let mut part = layers.last().unwrap().chunks_exact(2);
             for chunk in part{
-                let new_parent:  = MerkleNode::parent(&chunk[0], &chunk[1]);
+                let new_parent  = MerkleNode::parent(&chunk[0], &chunk[1]);
                 next_layer.push(new_parent)
             }
             layers.push(next_layer)
         }
 
 
-        MerkleTree { layers: todo!() }
+        MerkleTree { layers,}
     }
     
 
 
     /// Return the root hash
-    pub fn root(&self) -> &[u8; 32] {
-        // TODO: Return a reference to the root hash
-        todo!()
+    pub fn root(&self) -> [u8; 32] {
+        self.layers.last().unwrap()[0].hash
     }
 
     /// Return the depth (number of levels - 1)
