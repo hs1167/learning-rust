@@ -10,6 +10,6 @@ fn gcd (mut a: u64, mut b: u64) -> u64 {
 
 
 fn main () {
-    let c = gcd(17,23);
+    let c = gcd(66528,52920);
     println!("{c}");
 }
