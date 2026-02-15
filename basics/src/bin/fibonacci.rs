@@ -1,5 +1,5 @@
 fn main(){
-    let x = fib(18);
+    let x = fib(3);
     println!("The 18th fibonacci number is : {x}");
 }
 
