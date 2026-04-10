@@ -1,11 +1,11 @@
-# 🦀 Learning Rust & Zero-Knowledge Proofs
+# Learning Rust & Zero-Knowledge Proofs
 
 **Journey Started:** January 10, 2026  
 **Status:** Mastering Rust fundamentals & Cryptographic structures.
 
 ---
 
-## 🚀 Featured Project: Merkle Tree from Scratch
+## Featured Project: Merkle Tree from Scratch
 **Shipped: January 24, 2026** After a week of intensive learning via the *Rust Book* and *Rustlings*, I dedicated the half of second week to designing and implementing a complete **Binary Merkle Tree**.
 
 ### Key Technical Achievements:
@@ -30,7 +30,7 @@ graph BT
     style R fill:#f96,stroke:#333,stroke-width:4px
 ```
 
-## 📂 Project Structure
+## Project Structure
 * `basics/`: Core Rust concepts and custom data structures (The Merkle Tree lives here).
 * `exercises/rustlings/`: Focused on core chapters to build a solid foundation for crypto-implementations.
 * `proof-systems/`: Ongoing research into algebraic structures and ZK-SNARKs and ZK-STARKs.
